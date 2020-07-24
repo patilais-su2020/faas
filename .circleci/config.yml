@@ -1,0 +1,45 @@
+version: 2.1
+orbs:
+  node: circleci/node@1.1.6
+jobs:
+  build:
+    docker:
+      - image: 'cimg/base:stable'
+    steps:
+      - checkout
+      - run:
+          name: Install aws cli
+          command: |
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+            aws configure set default.region us-east-1
+            aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
+            aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
+      - run: 
+          name: Compress Artifacts
+          command: |
+            echo "Current directory: "`pwd`
+            mkdir -p lambda_functions
+            cd lambda_functions
+            cp -r ../resetpassword.js .
+            zip -r lambda-${CIRCLE_BUILD_NUM}.zip .
+      - run:
+          name: Upload Artifacts to S3
+          command: |
+            ls -la
+            cd lambda_functions
+            aws configure list
+            aws s3 cp lambda-${CIRCLE_BUILD_NUM}.zip s3://codedeploy.neucloudwebapp.me --sse
+      - run:
+          name: Call CodeDeploy API
+          command: |
+            pwd
+            ls
+            # cd /home/circleci/project
+            cd lambda_functions
+            aws deploy create-deployment --output json --application-name csye6225-lambda --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name code_deploy_lambda_group --s3-location bucket=codedeploy.neucloudwebapp.me,bundleType=zip,key=lambda-${CIRCLE_BUILD_NUM}.zip
+workflows:
+    pr_check:
+      jobs:
+        - build
