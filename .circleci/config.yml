@@ -13,7 +13,7 @@ jobs:
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
             sudo ./aws/install
-            aws configure set default.region us-east-1
+            aws configure set default.region ${AWS_REGION}
             aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
             aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
       - run: 
@@ -22,7 +22,7 @@ jobs:
             echo "Current directory: "`pwd`
             mkdir -p lambda_functions
             cd lambda_functions
-            cp -r ../resetpassword.js .
+            cp ../resetpassword.js .
             zip -r lambda-${CIRCLE_BUILD_NUM}.zip .
       - run:
           name: Upload Artifacts to S3
@@ -30,7 +30,7 @@ jobs:
             ls -la
             cd lambda_functions
             aws configure list
-            aws s3 cp lambda-${CIRCLE_BUILD_NUM}.zip s3://codedeploy.neucloudwebapp.me --sse
+            aws s3 cp lambda-${CIRCLE_BUILD_NUM}.zip ${CODE_DEPLOY_S3_BUCKET} --sse
       - run:
           name: AWS Lambda Update Function Code
           command: |
