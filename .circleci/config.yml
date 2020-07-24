@@ -39,7 +39,7 @@ jobs:
             ls
             # cd /home/circleci/project
             cd lambda_functions
-            aws deploy create-deployment --output json --application-name csye6225-lambda --deployment-config-name CodeDeployDefault.LambdaAllAtOnce --deployment-group-name csye6225-lambda-deployment --s3-location bucket=codedeploy.neucloudwebapp.me,bundleType=yaml,key=lambda-${CIRCLE_BUILD_NUM}.zip
+            aws deploy create-deployment --application-name csye6225-lambda --deployment-config-name CodeDeployDefault.LambdaAllAtOnce --deployment-group-name csye6225-lambda-deployment --revision '{"revisionType": "AppSpecContent", "appSpecContent": {"content": "{\"Resources\":[{\"lambda-webapp\":{\"Properties\":{\"Alias\":\"current-with-refresh1\",\"CurrentVersion\":\"1\",\"Name\":\"fond-mammoth-lambda1\",\"TargetVersion\":\"1\"},\"Type\":\"AWS::Lambda::Function\"}}],\"version\":\"0.0\"}"}}' --output text --query '[deploymentId]'
 workflows:
     pr_check:
       jobs:
