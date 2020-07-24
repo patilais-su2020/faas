@@ -1,9 +1,0 @@
-version: 0.0
-Resources:
-  - lambda-webapp:
-      Type: AWS::Lambda::Function
-      Properties:
-        Name: "lambda-webapp"
-        Alias: "lambda-webapp-new"
-        CurrentVersion: "1"
-        TargetVersion: "2"
