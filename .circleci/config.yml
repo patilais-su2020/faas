@@ -35,6 +35,7 @@ jobs:
           name: AWS Lambda Update Function Code
           command: |
             pwd
+            export TERM=xterm
             cd lambda_functions
             ls
             aws --output json lambda update-function-code --function-name lambda-webapp --region ${AWS_REGION} --zip-file fileb://lambda-${CIRCLE_BUILD_NUM}.zip
