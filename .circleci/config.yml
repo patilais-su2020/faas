@@ -23,6 +23,7 @@ jobs:
             mkdir -p lambda_functions
             cd lambda_functions
             cp -r ../resetpassword.js .
+            cp ../appspec.yml .
             zip -r lambda-${CIRCLE_BUILD_NUM}.zip .
       - run:
           name: Upload Artifacts to S3
