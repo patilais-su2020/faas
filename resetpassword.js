@@ -1,10 +1,10 @@
 const AWS = require('aws-sdk')
 var ses = new AWS.SES({
-    region: 'us-east-1'
+    region: process.env.AWS_REGION
 });
 
 const docClient = new AWS.DynamoDB.DocumentClient({
-    region: 'us-east-1'
+    region: process.env.AWS_REGION
 });
 
 exports.handler = (event, context, callback) => {
@@ -47,7 +47,7 @@ exports.handler = (event, context, callback) => {
                 difference = difference / 1000
 
                 if(difference <= 900){
-                    console.log("TimeD difference:::",difference )
+                    console.log("TimeD difference:::", difference )
                     return;
                 }else{
                     updateRecord(emailData, uidData)

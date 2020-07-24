@@ -37,6 +37,7 @@ jobs:
             pwd
             cd lambda_functions
             ls
+            aws lambda update-function-configuration --function-name lambda-webapp --environment '{"Variables":{"AWS_REGION":"${AWS_REGION}"}}'
             aws lambda update-function-code --function-name lambda-webapp --region ${AWS_REGION} \
             --zip-file fileb://lambda-${CIRCLE_BUILD_NUM}.zip
             echo "code deployment complete"
