@@ -5,7 +5,7 @@ exports.handler = (event, context, callback) => {
     
     var params = {
        Destination: {
-           ToAddresses: ["tejasnadgoud@gmail.com"]
+           ToAddresses: ["ashashokpat@gmail.com"]
        },
        Message: {
            Body: {
@@ -19,7 +19,7 @@ exports.handler = (event, context, callback) => {
                
            }
        },
-       Source: "nadgoud.t@gmail.com"
+       Source: "support@prod.neucloudwebapp.me"
    };
 
    
