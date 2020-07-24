@@ -33,13 +33,16 @@ jobs:
             aws configure list
             aws s3 cp lambda-${CIRCLE_BUILD_NUM}.zip s3://codedeploy.neucloudwebapp.me --sse
       - run:
-          name: Call CodeDeploy API
+          name: AWS Lambda Update Function Code
           command: |
             pwd
-            ls
-            # cd /home/circleci/project
             cd lambda_functions
-            aws deploy create-deployment --application-name csye6225-lambda --deployment-config-name CodeDeployDefault.LambdaAllAtOnce --deployment-group-name csye6225-lambda-deployment --revision '{"revisionType": "AppSpecContent", "appSpecContent": {"content": "{\"Resources\":[{\"lambda-webapp\":{\"Properties\":{\"Alias\":\"lambda-webapp\",\"CurrentVersion\":\"1\",\"Name\":\"lambda-webapp\",\"TargetVersion\":\"2\"},\"Type\":\"AWS::Lambda::Function\"}}],\"version\":\"0.0\"}"}}' --output text --query '[deploymentId]'
+            ls
+            aws lambda update-function-code --function-name lambda-webapp --region ${AWS_REGION} \
+            --zip-file fileb://lambda-${CIRCLE_BUILD_NUM}.zip
+            echo "code deployment complete"
+            # aws deploy create-deployment --application-name csye6225-lambda --deployment-config-name CodeDeployDefault.LambdaAllAtOnce --deployment-group-name csye6225-lambda-deployment --revision '{"revisionType": "AppSpecContent", "appSpecContent": {"content": "{\"version\": 0.0,\"Resources\": [{\"lambda-webapp\": {\"Type\": \"AWS::Lambda::Function\",\"Properties\": {\"Name\": \"lambda-webapp\",\"Alias\": \"lambda-webapp\",\"CurrentVersion\": \"1\",\"TargetVersion\": \"2\"}}}]}"}}' --output text --query '[deploymentId]'
+
 workflows:
     pr_check:
       jobs:
