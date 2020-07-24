@@ -1,10 +1,10 @@
 const AWS = require('aws-sdk')
 var ses = new AWS.SES({
-    region: process.env.AWS_REGION
+    region: process.env.aws_region
 });
 
 const docClient = new AWS.DynamoDB.DocumentClient({
-    region: process.env.AWS_REGION
+    region: process.env.aws_region
 });
 
 exports.handler = (event, context, callback) => {
