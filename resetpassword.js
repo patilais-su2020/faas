@@ -168,9 +168,9 @@ function updateRecord(email, uid) {
     });
 }
 function sendEmail(receiver, token, id, context,event ) {
-    let sender = "service@prod.rhishikesh.me";
+    let sender = "support@prod.neucloudwebapp.me";
     let email_subject = "Reset link for your account on http://prod.cloudwebapp.me"
-    let reset_token = `http://prod.rhishikesh.me/reset?email:${receiver}&token=${token}&id=${id}`
+    let reset_token = `http://prod.neucloudwebapp.me/reset?email:${receiver}&token=${token}&id=${id}`
 
     console.log("sendEmail:::: " + receiver);
 
