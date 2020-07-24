@@ -34,11 +34,10 @@ jobs:
       - run:
           name: AWS Lambda Update Function Code
           command: |
-            export TERM=xterm
             pwd
             cd lambda_functions
             ls
-            aws lambda update-function-code --function-name 'lambda-webapp' --zip-file fileb://lambda-${CIRCLE_BUILD_NUM}.zip
+            aws lambda update-function-code --function-name lambda_webapp --zip-file fileb://lambda-${CIRCLE_BUILD_NUM}.zip
             echo "code deployment complete"
             # aws deploy create-deployment --application-name csye6225-lambda --deployment-config-name CodeDeployDefault.LambdaAllAtOnce --deployment-group-name csye6225-lambda-deployment --revision '{"revisionType": "AppSpecContent", "appSpecContent": {"content": "{\"version\": 0.0,\"Resources\": [{\"webapp\": {\"Type\": \"AWS::Lambda::Function\",\"Properties\": {\"Name\": \"webapp\",\"Alias\": \"webapp\",\"CurrentVersion\": \"1\",\"TargetVersion\": \"2\"}}}]}"}}' --output text --query '[deploymentId]'
 workflows:
