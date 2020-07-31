@@ -28,6 +28,7 @@ exports.handler = (event, context, callback) => {
     var user_data = Message.split(":::");
     var uidData = user_data[1] ? user_data[1] : "";
     var emailData = user_data[0] ? user_data[0] : "";
+    var tokenTimeStamp;
 
     getRecord(emailData, uidData)
         .then(data =>{
@@ -37,23 +38,24 @@ exports.handler = (event, context, callback) => {
             } = data;
             var {
                 UUID = '',
-                TimeD = '',
+                TokenD = '',
                 Email = ''
             } = Item;
 
             if(data && UUID){
-                TimeD = Number(TimeD);
-                let difference = Date.now() - TimeD;
+                TokenD = Number(TokenD);
+                let difference = Date.now() - TokenD;
                 difference = difference / 1000
-                console.log("time difference is ",difference)
+
                 if(difference <= 900){
-                    console.log("TimeD difference:::", difference )
+                    console.log("Token difference:::",difference )
                     return;
                 }else{
-                    updateRecord(emailData, uidData)
+                    tokenTimeStamp = Date.now().toString();
+                    updateRecord(emailData, uidData, tokenTimeStamp)
                         .then(data =>{
                             console.log("updateRecord:::",data )
-                            sendEmail(emailData, Date.now().toString(), uidData, context, event)
+                            sendEmail(emailData, tokenTimeStamp, uidData, context, event)
                                 .then(data =>{
                                     console.log("sendEmail:::",data )
                                     return;
@@ -69,10 +71,11 @@ exports.handler = (event, context, callback) => {
                         })
                 }
             }else{
-                putRecord(emailData, uidData)
+                tokenTimeStamp = Date.now().toString();
+                putRecord(emailData, uidData, tokenTimeStamp)
                     .then(data =>{
                         console.log("putRecord:::",data )
-                        sendEmail(emailData, Date.now().toString(), uidData, context, event)
+                        sendEmail(emailData, tokenTimeStamp, uidData, context, event)
                             .then(data =>{
                                 console.log("sendEmail:::",data )
                                 return;
@@ -117,19 +120,19 @@ function getRecord(email, uid){
         docClient.get(getQuery, function (err, data) {
             if (err) {
                 console.log(err);
-                reject(new Error('Something went wrong please try again later'));
+                reject(new Error('Ooops, something broke is getQuery!'));
             } else {
                 resolve(data);
             }
         });
     });
 }
-function putRecord(email, uid) {
+function putRecord(email, uid, tokenTimeStamp) {
     var putQuery = {
         Item: {
             "UUID": uid,
             "Email": email,
-            "TimeD": Date.now().toString()
+            "TokenD": tokenTimeStamp
         },
         TableName: 'csye6225'
     };
@@ -137,22 +140,22 @@ function putRecord(email, uid) {
     return new Promise(function (resolve, reject) {
         docClient.put(putQuery, function (err, data) {
             if (err) {
-                reject(new Error('Something went wrong please try again later'));
+                reject(new Error('Ooops, something broke!'));
             } else {
                 resolve(data);
             }
         });
     });
 }
-function updateRecord(email, uid) {
+function updateRecord(email, uid, tokenTimeStamp) {
     var updateQuery = {
         Key: {
             "UUID": uid
         },
         TableName: 'csye6225',
-        UpdateExpression: 'set TimeD = :t',
+        UpdateExpression: 'set TokenD = :t',
         ExpressionAttributeValues: {
-            ':t' : Date.now().toString()
+            ':t' : tokenTimeStamp
         }
     };
     console.log("updateRecord:::::",updateQuery)
@@ -160,17 +163,17 @@ function updateRecord(email, uid) {
         docClient.update(updateQuery, function (err, data) {
             if (err) {
                 console.log("updateRecord:::ERRR::",err)
-                reject(new Error('Something went wrong please try again later'));
+                reject(new Error('Ooops, something broke!'));
             } else {
                 resolve(data);
             }
         });
     });
 }
-function sendEmail(receiver, token, id, context,event ) {
-    let sender = "support@prod.neucloudwebapp.me";
-    let email_subject = "Reset link for your account on http://prod.cloudwebapp.me"
-    let reset_token = `http://prod.neucloudwebapp.me/reset?email:${receiver}&token=${token}&id=${id}`
+function sendEmail(receiver, TokenD, id, context,event ) {
+    let sender = "service@prod.neucloudwebapp.me";
+    let email_subject = "Reset link for your account on http://prod.neucloudwebapp.me"
+    let reset_token = `http://prod.neucloudwebapp.me/reset?email:${receiver}&token=${TokenD}&id=${id}`
 
     console.log("sendEmail:::: " + receiver);
 
