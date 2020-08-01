@@ -189,9 +189,9 @@ function sendEmail(receiver, TokenD, id, context,event ) {
                             + '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'
                             + '<title>' + 'Password Reset Link' + '</title>'
                             + '</head><body>'
-                            + `Hi, </br>`
-                            + `Please follow the below link to reset your password</br>`
-                            + `</br><a href="${reset_token}">${reset_token}</a>`
+                            + `Hi, <br>`
+                            + `Please follow the below link to reset your password <br>`
+                            + `<br><a href="${reset_token}">${reset_token}</a>`
                             + '</body></html>'
                     }
                 },
