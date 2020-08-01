@@ -172,8 +172,8 @@ function updateRecord(email, uid, tokenTimeStamp) {
 }
 function sendEmail(receiver, TokenD, id, context,event ) {
     let sender = "service@prod.neucloudwebapp.me";
-    let email_subject = "Reset link for your account on http://prod.neucloudwebapp.me"
-    let reset_token = `http://prod.neucloudwebapp.me/reset?email:${receiver}&token=${TokenD}&id=${id}`
+    let email_subject = "Reset link for your account on https://prod.neucloudwebapp.me"
+    let reset_token = `https://prod.neucloudwebapp.me/reset?email:${receiver}&token=${TokenD}&id=${id}`
 
     console.log("sendEmail:::: " + receiver);
 
@@ -187,11 +187,11 @@ function sendEmail(receiver, TokenD, id, context,event ) {
                     Html: {
                         Data: '<html><head>'
                             + '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'
-                            + '<title>' + 'Reset Link' + '</title>'
+                            + '<title>' + 'Password Reset Link' + '</title>'
                             + '</head><body>'
-                            + `Hi, <br>`
-                            + `Reset your password using the following link <br>`
-                            + `<a href="${reset_token}">${reset_token}</a>`
+                            + `Hi, </br>`
+                            + `Please follow the below link to reset your password</br>`
+                            + `</br><a href="${reset_token}">${reset_token}</a>`
                             + '</body></html>'
                     }
                 },
